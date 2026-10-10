@@ -18,7 +18,7 @@ button:disabled{opacity:.35}
 #floorTurn{font-size:12px;font-weight:800;white-space:nowrap}
 #turnTrack{height:4px;background:#454851;border-radius:5px;overflow:hidden;margin-top:3px}
 #turnBar{height:100%;width:0;background:var(--accent)}
-#status{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+#status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .stat{font-size:11px;min-width:0;background:#292c32;border-radius:6px;padding:4px 6px}
 .statline{display:flex;justify-content:space-between;gap:4px;white-space:nowrap}
 .bar{height:4px;background:#484b53;border-radius:5px;overflow:hidden;margin-top:3px}
@@ -27,12 +27,19 @@ button:disabled{opacity:.35}
 #main{display:flex;flex:1;min-height:0;flex-direction:column}
 #stage{flex:0 0 64%;min-height:0;display:flex;align-items:center;justify-content:center;background:#08090b;overflow:hidden;position:relative;border-bottom:1px solid var(--line)}
 #canvas{display:block;max-width:100%;max-height:100%;image-rendering:pixelated}
-#bottom{flex:1;min-height:0;display:grid;grid-template-columns:minmax(100px, .8fr) minmax(220px,1.2fr);gap:6px;padding:6px;background:#1a1c21}
+#bottom{flex:1;min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:minmax(68px, .34fr) minmax(0, .66fr);gap:6px;padding:6px;background:#1a1c21}
+#logPanel{grid-row:1;max-height:100%;min-height:0}
+#log{max-height:3.9em;line-height:1.3}
+#bottomLower{display:grid;grid-template-columns:minmax(100px,.85fr) minmax(180px,1.15fr);gap:6px;min-height:0}
+#mapPanel{display:flex;flex-direction:column;min-height:0;min-width:0;border:1px solid #383b43;border-radius:8px;padding:4px;gap:3px;overflow:hidden}
+#miniMapCanvas{display:block;width:100%;height:100%;min-height:0;object-fit:contain;image-rendering:pixelated;background:#070809}
+#miniMapTitle{font-size:11px;font-weight:800;flex:none}
+
 #logPanel{display:flex;flex-direction:column;min-height:0;min-width:0;border:1px solid #383b43;border-radius:8px;overflow:hidden}
 #logTitle{font-size:10px;font-weight:800;padding:5px 7px;color:#b9bbc2;border-bottom:1px solid #383b43;flex:none}
 #log{overflow:auto;min-height:0;padding:4px 6px;font-size:11px;line-height:1.35;overscroll-behavior:contain}
 .logline{padding:3px 0;border-bottom:1px solid #292c32;overflow-wrap:anywhere}
-#controlPanel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0}
+#controlPanel{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:0}
 .dpad{display:grid;grid-template-columns:repeat(3,minmax(34px,48px));grid-template-rows:repeat(3,minmax(32px,43px));gap:3px}
 .dpad button{padding:0;font-size:20px}
 .dpad .wait{font-size:14px;background:#484b52}
@@ -62,12 +69,12 @@ button:disabled{opacity:.35}
 @media(min-width:650px){
  #game{max-height:1000px;border-left:1px solid #333;border-right:1px solid #333}
  #stage{flex-basis:67%}
- #bottom{grid-template-columns:minmax(180px,.8fr) minmax(300px,1.2fr)}
+ #bottomLower{grid-template-columns:minmax(180px,.8fr) minmax(300px,1.2fr)}
  .dpad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,48px)}
  .actions{max-width:340px}.actions button{font-size:12px}
 }
 @media(max-height:620px){
- #top{padding:3px 6px}#stage{flex-basis:58%}#bottom{padding:4px}
+ #top{padding:3px 6px}#stage{flex-basis:58%}#bottom{padding:4px;grid-template-rows:minmax(54px,.3fr) minmax(0,.7fr)}
  .dpad{grid-template-columns:repeat(3,34px);grid-template-rows:repeat(3,30px)}
  .dpad button{font-size:16px}.actions button{padding:5px 2px}.stat{padding:3px 5px}
 }
@@ -82,21 +89,25 @@ button:disabled{opacity:.35}
    <div class="stat"><div class="statline"><span>Lv <b id="lvText">1</b></span><span id="expText">EXP 0/10</span></div><div class="bar"><i id="expBar"></i></div></div>
    <div class="stat"><div class="statline"><span>HP</span><b id="hpText">20/20</b></div><div class="bar"><i id="hpBar"></i></div></div>
    <div class="stat"><div class="statline"><span>満腹度</span><b id="foodText">100/100</b></div><div class="bar"><i id="foodBar"></i></div></div>
+   <div class="stat"><div class="statline"><span>所持金</span><b id="moneyText">0 G</b></div><div class="bar"><i id="moneyBar"></i></div></div>
   </div>
  </header>
  <main id="main">
   <section id="stage"><canvas id="canvas" width="560" height="448"></canvas><div id="toast"></div></section>
   <section id="bottom">
    <div id="logPanel"><div id="logTitle">冒険ログ</div><div id="log"></div></div>
-   <div id="controlPanel">
-    <div class="dpad">
-     <button data-dir="-1,-1" aria-label="左上">↖</button><button data-dir="0,-1" aria-label="上">↑</button><button data-dir="1,-1" aria-label="右上">↗</button>
-     <button data-dir="-1,0" aria-label="左">←</button><button class="wait" data-wait="1" aria-label="待機">・</button><button data-dir="1,0" aria-label="右">→</button>
-     <button data-dir="-1,1" aria-label="左下">↙</button><button data-dir="0,1" aria-label="下">↓</button><button data-dir="1,1" aria-label="右下">↘</button>
+   <div id="bottomLower">
+    <div id="mapPanel"><div id="miniMapTitle">全体マップ</div><canvas id="miniMapCanvas" width="250" height="250"></canvas></div>
+    <div id="controlPanel">
+     <div class="dpad">
+      <button data-dir="-1,-1" aria-label="左上">↖</button><button data-dir="0,-1" aria-label="上">↑</button><button data-dir="1,-1" aria-label="右上">↗</button>
+      <button data-dir="-1,0" aria-label="左">←</button><button class="wait" id="centerDashBtn" aria-label="ダッシュ">⚡</button><button data-dir="1,0" aria-label="右">→</button>
+      <button data-dir="-1,1" aria-label="左下">↙</button><button data-dir="0,1" aria-label="下">↓</button><button data-dir="1,1" aria-label="右下">↘</button>
+     </div>
+     <div id="dashState"></div>
+     <div class="actions"><button id="waitBtn">待機</button><button id="footBtn">足元</button><button id="menuBtn">☰ メニュー</button></div>
+     <div class="small">移動で攻撃・通常移動で自動取得</div>
     </div>
-    <div id="dashState"></div>
-    <div class="actions"><button id="dashBtn">⚡ ダッシュ</button><button id="footBtn">足元</button><button id="menuBtn">☰ メニュー</button></div>
-    <div class="small">移動で攻撃・アイテム自動取得</div>
    </div>
   </section>
  </main>
@@ -104,12 +115,12 @@ button:disabled{opacity:.35}
   <div class="overlay" id="menuOverlay"><div class="modal"><h2>メニュー</h2><div class="menuGrid">
    <button data-menu="inventory">所持品</button><button data-menu="status">状態</button><button data-menu="map">全体マップ</button><button data-menu="help">遊び方・情報</button>
   </div><div class="modalActions"><button data-close>閉じる</button></div></div></div>
-  <div class="overlay" id="inventoryOverlay"><div class="modal"><h2>所持品 <span class="small" id="inventoryCount"></span></h2><p class="small">完全鑑定されていないアイテムは暗い文字で表示されます。</p><div id="inventoryList" class="itemList"></div><div id="itemDetail" style="display:none"></div><div class="modalActions"><button data-back="menuOverlay">メニューへ</button><button data-close>閉じる</button></div></div></div>
+  <div class="overlay" id="inventoryOverlay"><div class="modal"><h2>所持品 <span class="small" id="inventoryCount"></span></h2><p class="small">完全鑑定されていないアイテムは暗い文字で表示されます。</p><div id="inventoryList" class="itemList"></div><div id="itemDetail" style="display:none"></div><div class="modalActions"><button id="sortInventoryBtn">整頓</button><button data-back="menuOverlay">メニューへ</button><button data-close>閉じる</button></div></div></div>
   <div class="overlay" id="statusOverlay"><div class="modal"><h2>冒険者の状態</h2><div id="statusDetails"></div><div class="modalActions"><button data-back="menuOverlay">メニューへ</button><button data-close>閉じる</button></div></div></div>
   <div class="overlay" id="mapOverlay"><div class="modal"><h2>全体マップ</h2><canvas id="fullMapCanvas" width="500" height="500"></canvas><p class="small">黒：未探索／暗色：探索済み／明色：現在見えている範囲</p><div class="modalActions"><button data-back="menuOverlay">メニューへ</button><button data-close>閉じる</button></div></div></div>
   <div class="overlay" id="helpOverlay"><div class="modal"><h2>遊び方・アイテム鑑定</h2><p>フロアは50×50マス。部屋の中は部屋全体が見え、通路では周囲1マスが見えます。探索済みの地形は暗く記憶されます。</p><p>アイテムは足元に乗ると自動で拾います。所持上限は20個。アイテムを選ぶと、そのアイテムで可能な用途だけが優先順に表示されます。</p><p><b>鑑定段階</b><br>未確定：名前不明／名称鑑定：名前は判明、個体状態は不明／完全鑑定：名前と個体状態が判明。1本を完全鑑定すると、同じ外見名のアイテムは名称鑑定されます。</p><p>用途の表示順：使う→食べる→撃つ→発動→入れる→見る→押す→投げる→置く→説明。未鑑定では隠れる用途もあります。</p><div class="modalActions"><button data-back="menuOverlay">メニューへ</button><button data-close>閉じる</button></div></div></div>
-  <div class="overlay" id="deathOverlay"><div class="modal"><h2>冒険はここで終わった…</h2><p id="deathText"></p><div class="modalActions"><button id="restartBtn">新しい冒険</button></div></div></div>
-  <div class="overlay" id="floorOverlay"><div class="modal"><h2>フロア踏破！</h2><p id="floorText"></p><div class="modalActions"><button id="continueBtn">次のフロアへ</button></div></div></div>
+  <div class="overlay" id="deathOverlay"><div class="modal"><h2>冒険はここで終わった…</h2><p id="deathText"></p><div class="modalActions"><button id="reviveBtn">復活</button><button id="restartBtn">新しい冒険</button></div></div></div>
+  <div class="overlay" id="floorOverlay"><div class="modal"><h2 id="floorTitle">フロアを下りますか？</h2><p id="floorText"></p><div class="modalActions"><button id="continueBtn">はい</button><button id="floorNoBtn">いいえ</button></div></div></div>
  </div>
 </div>
 <script>
@@ -121,7 +132,8 @@ const mapCanvas=document.getElementById('fullMapCanvas'),mctx=mapCanvas.getConte
 const $=id=>document.getElementById(id);
 let floor=1,turn=0,player,enemies=[],items=[],traps=[],stairs,rooms=[],explored,visible;
 let inventory=[],logs=[],dashMode=false,gameOver=false,paused=false,selectedItemId=null,nextItemId=1;
-let level=1,exp=0,maxHp=20,hp=20,food=100,weapon=null,shield=null;
+let level=1,exp=0,maxHp=20,hp=20,food=100,money=0,weapon=null,shield=null;
+let moveSteps=0,hpRegenRemainder=0;
 const itemKnowledge=new Set();
 const itemDefs={
  potion:{name:'回復の薬',appearance:'赤い液体の薬',actions:['使う','投げる','置く','説明'],hiddenActions:['使う'],desc:'飲むとHPを回復する薬。',stateKeys:['呪い','残り量'],effect:'heal'},
@@ -164,7 +176,7 @@ function generateFloor(){
  for(let i=0;i<10;i++){const p=randomFloorPos();if(p&&!occupied(p.x,p.y))traps.push({x:p.x,y:p.y,kind:['damage','poison','warp'][rand(0,2)],discovered:false});}
  const end=rooms[rooms.length-1];stairs={x:end.x+Math.floor(end.w/2),y:end.y+Math.floor(end.h/2)};
  explored=Array.from({length:H},()=>Array(W).fill(false));visible=new Set();updateVision();
- turn=0;dashMode=false;$('dashBtn').classList.remove('active');$('dashState').textContent='';
+ turn=0;dashMode=false;$('dashBtn').classList.remove('active');$('centerDashBtn').classList.toggle('active',dashMode);$('dashState').textContent='';
 }
 function randomFloorPos(){for(let i=0;i<400;i++){const x=rand(1,W-2),y=rand(1,H-2);if(map[y][x]===0&&!(player&&player.x===x&&player.y===y)&&!(stairs&&stairs.x===x&&stairs.y===y))return{x,y};}return null;}
 function occupied(x,y){return !!enemyAt(x,y)||!!itemAt(x,y)||traps.some(t=>t.x===x&&t.y===y)||(stairs&&stairs.x===x&&stairs.y===y);}
@@ -174,23 +186,43 @@ function enemyAt(x,y){return enemies.find(e=>e.x===x&&e.y===y);}
 function itemAt(x,y){return items.find(i=>i.x===x&&i.y===y);}
 function roomAt(x,y){return rooms.find(r=>x>=r.x&&x<r.x+r.w&&y>=r.y&&y<r.y+r.h);}
 function diagonalClear(x,y,dx,dy){if(!dx||!dy)return true;return !isWall(x+dx,y)&&!isWall(x,y+dy);}
-function updateVision(){visible=new Set();const r=roomAt(player.x,player.y);if(r){for(let y=r.y;y<r.y+r.h;y++)for(let x=r.x;x<r.x+r.w;x++){visible.add(key(x,y));explored[y][x]=true;}}
- else {for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const x=player.x+dx,y=player.y+dy;if(inBounds(x,y)){visible.add(key(x,y));explored[y][x]=true;}}}
- // Discover traps only when actually visible.
- traps.forEach(t=>{if(visible.has(key(t.x,t.y)))t.discovered=true;});
+function updateVision(){
+ visible=new Set();
+ const r=roomAt(player.x,player.y);
+ if(r){
+  for(let y=r.y-1;y<r.y+r.h+1;y++)for(let x=r.x-1;x<r.x+r.w+1;x++){
+   if(inBounds(x,y)){visible.add(key(x,y));explored[y][x]=true;}
+  }
+ }else{
+  for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+   const x=player.x+dx,y=player.y+dy;
+   if(inBounds(x,y)){visible.add(key(x,y));explored[y][x]=true;}
+  }
+ }
+ // 視界内にあるだけでは罠を発見しない。踏んだときだけ発見する。
 }
 function isVisible(x,y){return visible.has(key(x,y));}
 function pickupAtPlayer(){const it=itemAt(player.x,player.y);if(!it)return;if(inventory.length>=MAX_ITEMS){log('持ち物がいっぱいで拾えなかった。');return;}
  items=items.filter(v=>v.id!==it.id);inventory.push(it);log((it.fully||it.identified?itemDefs[it.type].name:it.appearance)+'を自動で拾った。');}
 function move(dx,dy,fromDash=false){
  if(gameOver||paused)return;
- if(!inBounds(player.x+dx,player.y+dy)||isWall(player.x+dx,player.y+dy)||!diagonalClear(player.x,player.y,dx,dy)){if(fromDash)stopDash('壁に突き当たった');return;}
+ if(!inBounds(player.x+dx,player.y+dy)||isWall(player.x+dx,player.y+dy)||!diagonalClear(player.x,player.y,dx,dy)){
+  if(fromDash)stopDash('壁に突き当たった');return;
+ }
  const nx=player.x+dx,ny=player.y+dy,e=enemyAt(nx,ny);
- if(e){attackEnemy(e);endTurn();if(fromDash)stopDash('敵を見つけた');return;}
- player.x=nx;player.y=ny;
+ if(e){
+  // 角越しに斜め攻撃できないよう、移動判定と同じ角抜け禁止ルールを適用。
+  attackEnemy(e);endTurn();if(fromDash)stopDash('敵を見つけた');return;
+ }
+ player.x=nx;player.y=ny;moveSteps++;
  const trap=traps.find(t=>t.x===nx&&t.y===ny);
- if(trap){triggerTrap(trap);if(gameOver)return;if(fromDash){updateVision();draw();stopDash('トラップにかかった');return;}}
- pickupAtPlayer();
+ if(trap){trap.discovered=true;triggerTrap(trap);if(gameOver)return;if(fromDash){updateVision();draw();stopDash('トラップにかかった');return;}}
+ const it=itemAt(player.x,player.y);
+ if(it){
+  if(fromDash)log(itemLabel(it)+'の上に乗った。');
+  else if(inventory.length<MAX_ITEMS){items=items.filter(v=>v.id!==it.id);inventory.push(it);log(itemLabel(it)+'を自動で拾った。');}
+  else log('持ち物がいっぱいで拾えなかった。');
+ }
  if(stairs.x===player.x&&stairs.y===player.y){log('階段がある。足元から次の階へ進める。');if(fromDash){updateVision();draw();stopDash('階段を見つけた');return;}}
  endTurn();
  if(fromDash){updateVision();const reason=dashStopReason(dx,dy);draw();if(reason)stopDash(reason);else scheduleDashStep(dx,dy);}
@@ -198,12 +230,17 @@ function move(dx,dy,fromDash=false){
 function attackEnemy(e){const damage=rand(3,6)+(weapon?2+(weapon.plus||0):0)+level-1;e.hp-=damage;log(e.name+'に'+damage+'ダメージ！');if(e.hp<=0){enemies=enemies.filter(v=>v!==e);exp+=e.exp;log(e.name+'を倒した。EXP+'+e.exp);checkLevel();}}
 function enemyTurn(){
  for(const e of [...enemies]){if(!enemies.includes(e))continue;const dx=Math.sign(player.x-e.x),dy=Math.sign(player.y-e.y),dist=Math.max(Math.abs(player.x-e.x),Math.abs(player.y-e.y));
-  if(dist<=1){hp-=e.atk;log(e.name+'の攻撃！ '+e.atk+'ダメージ');if(hp<=0){die();return;}continue;}
+  const adx=player.x-e.x,ady=player.y-e.y;
+  if(dist<=1&&(adx===0||ady===0||diagonalClear(e.x,e.y,player.x,player.y))){hp-=e.atk;log(e.name+'の攻撃！ '+e.atk+'ダメージ');if(hp<=0){die();return;}continue;}
   if(dist<8&&Math.random()<.72){let opts=[[dx,dy],[dx,0],[0,dy],[Math.sign(-dy),Math.sign(dx)],[Math.sign(dy),Math.sign(-dx)]];for(const [sx,sy] of opts){if(!sx&&!sy)continue;const nx=e.x+sx,ny=e.y+sy;if(!isWall(nx,ny)&&diagonalClear(e.x,e.y,sx,sy)&&!enemyAt(nx,ny)&&!(player.x===nx&&player.y===ny)){e.x=nx;e.y=ny;break;}}}
  }
 }
 function endTurn(){
- turn++;food=Math.max(0,food-1);if(food===0){hp--;log('空腹でHPが減った！');if(hp<=0){die();return;}}
+ turn++;
+ if(moveSteps>=10){const loss=Math.floor(moveSteps/10);moveSteps%=10;food=Math.max(0,food-loss);log('10歩進み、満腹度が'+loss+'減った。');}
+ hpRegenRemainder+=maxHp/150;
+ if(hpRegenRemainder>=1){const heal=Math.floor(hpRegenRemainder);hpRegenRemainder-=heal;if(hp>0)hp=Math.min(maxHp,hp+heal);}
+ if(food===0){hp--;log('空腹でHPが減った！');if(hp<=0){die();return;}}
  enemyTurn();if(gameOver)return;
  updateVision();updateStatus();
  if(turn>=MAX_TURNS){log('1000ターン経過！強制的に次のフロアへ進む。');stopDash('ターン上限');setTimeout(()=>{if(!gameOver)goNextFloor(true);},100);return;}
@@ -216,9 +253,9 @@ function dashStopReason(dx,dy){
  if(traps.some(t=>t.x===player.x&&t.y===player.y)||traps.some(t=>t.discovered&&Math.max(Math.abs(t.x-player.x),Math.abs(t.y-player.y))<=1))return'トラップを見つけた';
  if(stairs.x===player.x&&stairs.y===player.y)return'階段を見つけた';
  const r=roomAt(player.x,player.y),pr=roomAt(player.x-dx,player.y-dy);
- if(r&&!pr)return'部屋に入った';
+
  if(!r&&pr)return'通路に出た';
- if(r)return'部屋に入った';
+
  // Stop at corridor turns/intersections or visibility boundary changes.
  const exits=[];for(let sy=-1;sy<=1;sy++)for(let sx=-1;sx<=1;sx++){if(!sx&&!sy)continue;if(!isWall(player.x+sx,player.y+sy)&&diagonalClear(player.x,player.y,sx,sy))exits.push([sx,sy]);}
  if(exits.length!==2)return'通路の分岐';
@@ -227,9 +264,20 @@ function dashStopReason(dx,dy){
  return '';
 }
 let dashTimer=null;
-function stopDash(reason=''){dashMode=false;clearTimeout(dashTimer);$('dashBtn').classList.remove('active');$('dashState').textContent='';if(reason)showToast('ダッシュ停止：'+reason);}
+function stopDash(reason=''){
+ clearTimeout(dashTimer);dashTimer=null;
+ $('dashBtn').classList.remove('active');$('centerDashBtn').classList.toggle('active',dashMode);
+ $('dashState').textContent=dashMode?'⚡ ダッシュ待機中':'';
+ if(reason)showToast('ダッシュ停止：'+reason);
+}
 function scheduleDashStep(dx,dy){if(!dashMode||gameOver||paused)return;dashTimer=setTimeout(()=>{if(dashMode)move(dx,dy,true);},105);}
-function toggleDash(){if(gameOver||paused)return;dashMode=!dashMode;$('dashBtn').classList.toggle('active',dashMode);$('dashState').textContent=dashMode?'⚡ ダッシュ中':'通常移動';if(dashMode)showToast('方向を選ぶとダッシュします');else stopDash();}
+function toggleDash(){
+ if(gameOver||paused)return;
+ dashMode=!dashMode;clearTimeout(dashTimer);dashTimer=null;
+ $('centerDashBtn').classList.toggle('active',dashMode);$('dashBtn').classList.remove('active');
+ $('dashState').textContent=dashMode?'⚡ ダッシュ待機中':'';
+ showToast(dashMode?'方向を選ぶとダッシュします':'ダッシュ解除');
+}
 function checkLevel(){while(exp>=level*10){exp-=level*10;level++;maxHp+=3;hp=Math.min(maxHp,hp+5);log('レベルアップ！ Lv'+level+'になった。');}}
 function die(){gameOver=true;stopDash();$('deathText').textContent=`${floor}階・${turn}ターンまで冒険した。到達レベル：${level}`;showOverlay('deathOverlay');}
 function goNextFloor(forced=false){stopDash();hideAllOverlays();floor++;generateFloor();if(forced){log('強制移動で'+floor+'階へ。');}else log(floor+'階へ進んだ。');updateStatus();draw();}
@@ -238,25 +286,44 @@ function updateStatus(){
  $('lvText').textContent=level;$('expText').textContent='EXP '+exp+'/'+(level*10);$('expBar').style.width=(exp/(level*10)*100)+'%';
  $('hpText').textContent=Math.max(0,hp)+'/'+maxHp;$('hpBar').style.width=Math.max(0,hp)/maxHp*100+'%';
  $('foodText').textContent=food+'/100';$('foodBar').style.width=food+'%';
+ $('moneyText').textContent=money+' G';$('moneyBar').style.width='100%';
 }
 function fitCanvas(){const rect=$('stage').getBoundingClientRect();const cols=Math.max(9,Math.floor(rect.width/TILE)),rows=Math.max(7,Math.floor(rect.height/TILE));const tile=Math.min(rect.width/cols,rect.height/rows);canvas.width=Math.floor(cols*tile);canvas.height=Math.floor(rows*tile);canvas.dataset.cols=cols;canvas.dataset.rows=rows;canvas.dataset.tile=tile;draw();}
 function draw(){
- if(!player||!map.length)return;
- const cols=Number(canvas.dataset.cols)||28,rows=Number(canvas.dataset.rows)||22,tile=Math.min(canvas.width/cols,canvas.height/rows);
- ctx.fillStyle='#050608';ctx.fillRect(0,0,canvas.width,canvas.height);
- let sx=Math.max(0,Math.min(W-cols,player.x-Math.floor(cols/2))),sy=Math.max(0,Math.min(H-rows,player.y-Math.floor(rows/2)));
- for(let vy=0;vy<rows;vy++)for(let vx=0;vx<cols;vx++){
-  const x=sx+vx,y=sy+vy;if(!inBounds(x,y))continue;const seen=explored[y][x],now=isVisible(x,y),px=vx*tile,py=vy*tile;
-  if(!seen)continue;
-  ctx.fillStyle=now?(map[y][x]===1?'#484b52':'#25292f'):(map[y][x]===1?'#17191e':'#111318');ctx.fillRect(px,py,tile,tile);
-  if(map[y][x]===1&&now){ctx.strokeStyle='#555962';ctx.strokeRect(px+.5,py+.5,tile-1,tile-1);}
-  if(now&&stairs.x===x&&stairs.y===y){ctx.fillStyle='#e8e2c5';ctx.font=`bold ${tile*.7}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('>',px+tile/2,py+tile/2);}
-  const it=now?itemAt(x,y):null;if(it){ctx.fillStyle='#ffd447';ctx.beginPath();ctx.arc(px+tile/2,py+tile/2,tile*.2,0,Math.PI*2);ctx.fill();}
-  const tr=now?traps.find(t=>t.x===x&&t.y===y&&t.discovered):null;if(tr){ctx.fillStyle='#ff4a55';ctx.font=`bold ${tile*.72}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('✖',px+tile/2,py+tile/2);}
-  const e=now?enemyAt(x,y):null;if(e){ctx.fillStyle='#ff9b9b';ctx.font=`bold ${tile*.72}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(e.sym,px+tile/2,py+tile/2);}
+ const rect=$('stage').getBoundingClientRect();
+ const dpr=Math.max(1,window.devicePixelRatio||1);
+ const cssW=Math.max(100,rect.width),cssH=Math.max(100,rect.height);
+ canvas.width=Math.floor(cssW*dpr);canvas.height=Math.floor(cssH*dpr);
+ canvas.style.width=cssW+'px';canvas.style.height=cssH+'px';
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#050608';ctx.fillRect(0,0,cssW,cssH);
+ const tile=Math.max(8,Math.min(32,Math.floor(Math.min(cssW/13,cssH/9))));
+ const cols=Math.ceil(cssW/tile),rows=Math.ceil(cssH/tile);
+ const left=player.x-Math.floor(cols/2),top=player.y-Math.floor(rows/2);
+ for(let sy=0;sy<rows;sy++)for(let sx=0;sx<cols;sx++){
+  const x=left+sx,y=top+sy,px=sx*tile,py=sy*tile;
+  if(!inBounds(x,y))continue; // floor exterior remains black
+  const k=key(x,y),now=isVisible(x,y);
+  if(!explored[y][x])continue;
+  if(now){ctx.fillStyle=map[y][x]===1?'#292c32':'#111317';}
+  else{ctx.fillStyle=map[y][x]===1?'#16181c':'#0b0c0f';}
+  ctx.fillRect(px,py,tile,tile);
+  if(map[y][x]===1){ctx.strokeStyle=now?'#363a42':'#1d2025';ctx.strokeRect(px+.5,py+.5,tile-1,tile-1);}
+  if(now){
+   const it=itemAt(x,y);if(it){ctx.fillStyle='#ffd447';ctx.beginPath();ctx.arc(px+tile/2,py+tile/2,tile*.19,0,Math.PI*2);ctx.fill();}
+   if(traps.some(t=>t.x===x&&t.y===y&&t.discovered)){ctx.fillStyle='#ff5d66';ctx.font=`bold ${tile*.7}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('×',px+tile/2,py+tile/2);}
+   if(stairs.x===x&&stairs.y===y){ctx.fillStyle='#e8e2c5';ctx.font=`bold ${tile*.7}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('>',px+tile/2,py+tile/2);}
+   const e=enemyAt(x,y);if(e){ctx.fillStyle='#e87979';ctx.font=`bold ${tile*.68}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(e.glyph||'S',px+tile/2,py+tile/2);}
+  }
  }
- const px=(player.x-sx)*tile,py=(player.y-sy)*tile;ctx.fillStyle='#f4f4f4';ctx.font=`bold ${tile*.8}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('@',px+tile/2,py+tile/2);
- updateStatus();
+ const px=(Math.floor(cols/2))*tile,py=(Math.floor(rows/2))*tile;
+ ctx.fillStyle='#f4f4f5';ctx.font=`bold ${tile*.72}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('@',px+tile/2,py+tile/2);
+ drawMiniMap();
+}
+function drawMiniMap(){
+ const mc=$('miniMapCanvas');if(!mc)return;const c=mc.getContext('2d');const w=mc.width,h=mc.height,cell=Math.min(w/W,h/H);
+ c.fillStyle='#020304';c.fillRect(0,0,w,h);
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!explored[y][x])continue;c.fillStyle=isVisible(x,y)?(map[y][x]===1?'#777b83':'#454a53'):(map[y][x]===1?'#24262b':'#17191e');c.fillRect(x*cell,y*cell,cell,cell);}
+ c.fillStyle='#fff';c.fillRect(player.x*cell+Math.max(1,cell*.2),player.y*cell+Math.max(1,cell*.2),Math.max(2,cell*.6),Math.max(2,cell*.6));
 }
 function drawFullMap(){const cell=10;mctx.clearRect(0,0,mapCanvas.width,mapCanvas.height);for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!explored[y][x]){mctx.fillStyle='#020304';}else if(isVisible(x,y)){mctx.fillStyle=map[y][x]===1?'#777b83':'#454a53';}else{mctx.fillStyle=map[y][x]===1?'#24262b':'#17191e';}mctx.fillRect(x*cell,y*cell,cell,cell);if(isVisible(x,y)){if(stairs.x===x&&stairs.y===y){mctx.fillStyle='#eee';mctx.fillText('>',x*cell+2,y*cell+8);}if(itemAt(x,y)){mctx.fillStyle='#ffd447';mctx.fillRect(x*cell+3,y*cell+3,4,4);}if(traps.some(t=>t.x===x&&t.y===y&&t.discovered)){mctx.fillStyle='#f44';mctx.fillText('×',x*cell+1,y*cell+8);}}}mctx.fillStyle='#fff';mctx.fillRect(player.x*cell+2,player.y*cell+2,6,6);}
 function showOverlay(id){paused=true;stopDash();hideAllOverlays(false);$(id).style.display='flex';}
@@ -274,9 +341,9 @@ function renderInventory(){
 function selectInventoryItem(id){
  selectedItemId=id;const it=inventory.find(v=>v.id===id);if(!it)return;const d=itemDefs[it.type],detail=$('itemDetail');detail.style.display='block';
  const allowed=d.actions.filter(a=>actionOrder.includes(a)).sort((a,b)=>actionOrder.indexOf(a)-actionOrder.indexOf(b));
- const visibleActions=allowed.filter(a=>it.fully||it.identified?!d.hiddenActions.includes(a):!d.hiddenActions.includes(a));
- // Unknown items can hide item-specific actions entirely; common disposal and description remain.
- const finalActions=it.fully?allowed:(it.identified?visibleActions:allowed.filter(a=>['投げる','置く','説明'].includes(a)));
+ const finalActions=(d.hideUsesWhenUnknown&&!it.identified)
+  ? allowed.filter(a=>['投げる','置く','説明'].includes(a))
+  : allowed;
  detail.innerHTML='<h3>'+escapeHtml(itemLabel(it))+'</h3><div class="small">'+escapeHtml(itemState(it))+'</div><p>'+escapeHtml(it.fully?d.desc:(it.identified?'詳しい状態は分からない。':'正体が分からないアイテム。'))+'</p><div class="actionChoices" id="actionChoices"></div>';
  const choices=detail.querySelector('#actionChoices');finalActions.forEach(a=>{const b=document.createElement('button');b.textContent=a;b.onclick=()=>runItemAction(it.id,a);choices.appendChild(b);});
  if(!finalActions.length)choices.textContent='判明している用途はありません。';
@@ -288,14 +355,15 @@ function runItemAction(id,action){
  if(action==='説明'){alert((it.fully?d.desc:it.identified?'名前は判明しているが、個体状態は不明。':'まだ正体が分からない。')+'\n'+itemState(it));return;}
  if(action==='置く'){const p={x:player.x,y:player.y};items.push({...it,x:p.x,y:p.y});inventory=inventory.filter(v=>v.id!==id);log(itemLabel(it)+'を足元に置いた。');closeInventory();draw();return;}
  if(action==='投げる'){inventory=inventory.filter(v=>v.id!==id);let tx=player.x+1,ty=player.y;if(isWall(tx,ty)){tx=player.x;ty=player.y-1;}const e=enemyAt(tx,ty);if(e){e.hp-=4;log(itemLabel(it)+'を投げつけ、'+e.name+'に4ダメージ。');if(e.hp<=0){enemies=enemies.filter(v=>v!==e);exp+=e.exp;checkLevel();}}else{items.push({...it,x:tx,y:ty});log(itemLabel(it)+'を投げた。');}closeInventory();endTurn();draw();return;}
- if(action==='食べる'||(action==='使う'&&it.type==='bread')){food=Math.min(100,food+45);inventory=inventory.filter(v=>v.id!==id);log(itemLabel(it)+'を食べた。満腹度が回復した。');closeInventory();endTurn();draw();return;}
- if(action==='装備'){if(it.type==='sword'){weapon=it;log(itemLabel(it)+'を装備した。');}else if(it.type==='bow'){weapon=it;log(itemLabel(it)+'を装備した。');}closeInventory();draw();return;}
+ if(action==='食べる'||(action==='使う'&&it.type==='bread')){fullIdentify(it);food=Math.min(100,food+45);inventory=inventory.filter(v=>v.id!==id);log(itemLabel(it)+'を食べた。満腹度が回復した。');closeInventory();endTurn();draw();return;}
+ if(action==='装備'){fullIdentify(it);if(it.type==='sword'||it.type==='bow'){weapon=it;log(itemLabel(it)+'を装備した。');}else if(it.type==='armor'){shield=it;log(itemLabel(it)+'を装備した。');}else{log(itemLabel(it)+'を装備した。');}closeInventory();draw();return;}
  if(action==='振る'){const e=enemies.find(v=>Math.max(Math.abs(v.x-player.x),Math.abs(v.y-player.y))<=1);if(e)attackEnemy(e);else log('振ったが、敵には届かなかった。');closeInventory();endTurn();draw();return;}
  if(action==='撃つ'){const e=enemies.find(v=>Math.max(Math.abs(v.x-player.x),Math.abs(v.y-player.y))<=4);if(e){e.hp-=6+(it.plus||0);log(e.name+'に矢を当てた！');if(e.hp<=0){enemies=enemies.filter(v=>v!==e);exp+=e.exp;checkLevel();}}else log('撃ったが、敵には当たらなかった。');closeInventory();endTurn();draw();return;}
  if(action==='発動'||action==='使う'){
+  if(it.type!=='wand')fullIdentify(it);
   if(it.type==='potion'){hp=Math.min(maxHp,hp+12);inventory=inventory.filter(v=>v.id!==id);log('回復の薬を使い、HPが回復した。');}
   else if(it.type==='scroll'){identifyTarget(id);inventory=inventory.filter(v=>v.id===id?false:true);log('鑑定の巻物を使った。');}
-  else if(it.type==='wand'){const e=enemies.find(v=>Math.max(Math.abs(v.x-player.x),Math.abs(v.y-player.y))<=5);if(e){let p;for(let i=0;i<100;i++){let x=rand(1,W-2),y=rand(1,H-2);if(map[y][x]===0&&!enemyAt(x,y)&&!(x===player.x&&y===player.y)){p={x,y};break;}}if(p){e.x=p.x;e.y=p.y;log(e.name+'をワープさせた。');}}else log('杖を振ったが、何も起こらなかった。');it.charges--;if(it.charges<=0)inventory=inventory.filter(v=>v.id!==id);else fullIdentify(it);}
+  else if(it.type==='wand'){const e=enemies.find(v=>Math.max(Math.abs(v.x-player.x),Math.abs(v.y-player.y))<=5);if(e){let p;for(let i=0;i<100;i++){let x=rand(1,W-2),y=rand(1,H-2);if(map[y][x]===0&&!enemyAt(x,y)&&!(x===player.x&&y===player.y)){p={x,y};break;}}if(p){e.x=p.x;e.y=p.y;log(e.name+'をワープさせた。');}}else log('杖を振ったが、何も起こらなかった。');it.charges--;if(it.charges<=0)inventory=inventory.filter(v=>v.id!==id);else {/* 杖を振っても鑑定されない */}}
   else if(it.type==='orb'){log('小球が光り、周囲の地形が見えた。');for(let y=Math.max(0,player.y-5);y<=Math.min(H-1,player.y+5);y++)for(let x=Math.max(0,player.x-5);x<=Math.min(W-1,player.x+5);x++)explored[y][x]=true;it.charges--;fullIdentify(it);if(it.charges<=0)inventory=inventory.filter(v=>v.id!==id);}
   else if(it.type==='seed'){food=Math.min(100,food+8);inventory=inventory.filter(v=>v.id!==id);log('種を使った。少し満腹になった。');}
   else {log('使ったが、今は何も起こらなかった。');}
@@ -307,16 +375,30 @@ function runItemAction(id,action){
 }
 function closeInventory(){hideAllOverlays();selectedItemId=null;}
 function openInventory(){renderInventory();showOverlay('inventoryOverlay');}
-function footAction(){if(gameOver||paused)return;if(stairs.x===player.x&&stairs.y===player.y){showOverlay('floorOverlay');$('floorText').textContent='B'+floor+'Fを踏破しました。'+turn+'ターン経過。';}else{const t=traps.find(v=>v.x===player.x&&v.y===player.y);if(t){t.discovered=true;log('足元にトラップがある！');}else log('足元には何もない。');draw();}}
+$('sortInventoryBtn').addEventListener('click',()=>{const rank={sword:0,bow:0,armor:1,accessory:2,potion:3,scroll:3,wand:4,orb:4,seed:5,bread:5,jar:6};inventory.sort((a,b)=>(rank[a.type]??9)-(rank[b.type]??9)||itemLabel(a).localeCompare(itemLabel(b),'ja')||(a.plus||0)-(b.plus||0));renderInventory();});
+function footAction(){if(gameOver||paused)return;if(stairs.x===player.x&&stairs.y===player.y){$('floorTitle').textContent='フロアを下りますか？';$('floorText').textContent='B'+floor+'Fから次のフロアへ進みます。';showOverlay('floorOverlay');}else{const t=traps.find(v=>v.x===player.x&&v.y===player.y);if(t){t.discovered=true;log('足元にトラップがある！');}else log('足元には何もない。');draw();}}
 function openFullMap(){drawFullMap();showOverlay('mapOverlay');}
 document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('click',()=>{const [dx,dy]=b.dataset.dir.split(',').map(Number);if(dashMode)move(dx,dy,true);else move(dx,dy);}));
-document.querySelector('[data-wait]').addEventListener('click',()=>{if(!gameOver&&!paused){stopDash();log('その場で待機した。');endTurn();draw();}});
+$('waitBtn').addEventListener('click',()=>{if(!gameOver&&!paused){clearTimeout(dashTimer);dashTimer=null;log('その場で待機した。');endTurn();draw();}});
+$('centerDashBtn').addEventListener('click',toggleDash);
 $('dashBtn').addEventListener('click',toggleDash);$('footBtn').addEventListener('click',footAction);$('menuBtn').addEventListener('click',openMenu);
 document.querySelectorAll('[data-menu]').forEach(b=>b.addEventListener('click',()=>{const v=b.dataset.menu;if(v==='inventory')openInventory();else if(v==='status'){const equipped=weapon?itemLabel(weapon):'なし';$('statusDetails').innerHTML=`<div class="statusLine">レベル <b>${level}</b></div><div class="statusLine">HP <b>${hp}/${maxHp}</b></div><div class="statusLine">満腹度 <b>${food}/100</b></div><div class="statusLine">経験値 <b>${exp}/${level*10}</b></div><div class="statusLine">装備中の武器 <b>${escapeHtml(equipped)}</b></div><div class="statusLine">所持品 <b>${inventory.length}/${MAX_ITEMS}</b></div>`;backTo('statusOverlay');}else if(v==='map')openFullMap();else backTo('helpOverlay');}));
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>hideAllOverlays()));
 document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>backTo(b.dataset.back)));
-$('continueBtn').addEventListener('click',()=>goNextFloor(false));$('restartBtn').addEventListener('click',()=>{floor=1;turn=0;level=1;exp=0;maxHp=20;hp=20;food=100;inventory=[];weapon=null;gameOver=false;logs=[];nextItemId=1;hideAllOverlays();generateFloor();log('新しい冒険が始まった。');updateStatus();draw();});
+$('continueBtn').addEventListener('click',()=>goNextFloor(false));$('floorNoBtn').addEventListener('click',()=>hideAllOverlays());
+$('reviveBtn').addEventListener('click',()=>{gameOver=false;hp=maxHp;food=100;hpRegenRemainder=0;hideAllOverlays();log('復活した。HPと満腹度が回復した。');updateStatus();draw();});
+$('restartBtn').addEventListener('click',()=>{floor=1;turn=0;level=1;exp=0;maxHp=20;hp=20;food=100;money=0;moveSteps=0;hpRegenRemainder=0;inventory=[];weapon=null;shield=null;gameOver=false;logs=[];nextItemId=1;hideAllOverlays();generateFloor();log('新しい冒険が始まった。');updateStatus();draw();});
 window.addEventListener('resize',fitCanvas);
+window.addEventListener('keydown',e=>{
+ if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ const key=e.key.toLowerCase();
+ if(key==='shift'||key==='x'){e.preventDefault();toggleDash();return;}
+ if(key==='f'){e.preventDefault();footAction();return;}
+ if(key==='escape'||key==='m'){e.preventDefault();openMenu();return;}
+ if(key==='5'||key==='.'||key===' '){e.preventDefault();if(!gameOver&&!paused){clearTimeout(dashTimer);dashTimer=null;log('その場で待機した。');endTurn();draw();}return;}
+ const dirs={arrowup:[0,-1],arrowdown:[0,1],arrowleft:[-1,0],arrowright:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0],q:[-1,-1],e:[1,-1],z:[-1,1],c:[1,1],"7":[-1,-1],"8":[0,-1],"9":[1,-1],"4":[-1,0],"6":[1,0],"1":[-1,1],"2":[0,1],"3":[1,1]};
+ if(dirs[key]){e.preventDefault();const [dx,dy]=dirs[key];if(!gameOver&&!paused){if(dashMode)move(dx,dy,true);else move(dx,dy);}return;}
+});
 function init(){generateFloor();fitCanvas();updateStatus();log('星屑の迷宮へようこそ。');log('黄色い●はアイテム。足元に乗ると自動で拾う。');log('部屋では部屋全体、通路では周囲1マスが見える。');}
 init();
 })();
